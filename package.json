@@ -1,0 +1,24 @@
+{
+  "name": "neural-game",
+  "version": "1.0.0",
+  "description": "The gameplay artefact of my 3rd year dissertation project.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nuxt --spa"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/varbrad/neural-game.git"
+  },
+  "author": "varbrad (Brad Davies)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/varbrad/neural-game/issues"
+  },
+  "homepage": "https://github.com/varbrad/neural-game#readme",
+  "devDependencies": {
+    "node-sass": "^4.7.2",
+    "nuxt": "^1.4.0",
+    "sass-loader": "^6.0.7"
+  }
+}
