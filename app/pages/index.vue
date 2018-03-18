@@ -3,7 +3,7 @@
     <h1>Activity Consent</h1>
     <div class="list">
       <p class="item" v-for="(item, i) in checklist" :key="i">
-        <span class="no">{{ i + 1 }}.</span>
+        <span class="no">{{ i + 1 }}</span>
         <span class="text">{{ item }}</span>
       </p>
     </div>
@@ -40,77 +40,70 @@ export default {
 @import '../assets/vars';
 
 .index {
-  background-color: $dark;
-  color: $light;
-  max-width: $max-width;
+  padding: 1rem;
+  background-color: $light;
   border-radius: 3px;
-  overflow: hidden;
 
   > h1 {
-    color: $dark;
-    background-color: $primary;
-    padding: 1rem;
-    margin: 0;
-    box-shadow: inset 0 -5px 0 $dark;
-    border-bottom: 5px solid $primary;
+    padding: 1rem 2rem;
+    margin: -1rem -1rem 1rem -1rem;
+    border-bottom: 1px solid $dark;
+    font-size: 2rem;
+    font-weight: 300;
   }
 
   > .list {
-    > .item {
+    margin: -1rem -1rem 1rem -1rem;
+
+    > p {
       display: flex;
       align-items: center;
-
-      &:nth-child(odd) {
-        background-color: rgba($light, 0.05);
-      }
+      justify-content: center;
+      font-size: 1.2rem;
 
       > .no {
-        padding: 1.5rem 2rem;
-        color: $primary;
-        font-weight: 600;
+        padding: 1rem 2rem;
         font-size: 1.5rem;
+        font-weight: 700;
+        color: $primary;
       }
 
       > .text {
-        font-size: 1.1rem;
+        flex: 1;
       }
     }
   }
 
   > .notice {
-    padding: 1rem 2rem;
-    margin: 1rem;
-    font-size: 1.1rem;
-    font-weight: 600;
     text-align: center;
-    background-color: rgba(black, 0.25);
-    border-radius: 5px;
+    max-width: 460px;
+    margin: 0 auto;
+    font-size: 0.9rem;
+    font-weight: bold;
+    padding: 1rem;
   }
 
   > .toolbar {
+    padding: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 1rem;
 
     > button {
-      transition: transform 300ms ease-out, background-color 150ms ease-out;
+      transition: all 150ms ease-out;
       cursor: pointer;
-      padding: 1rem;
-      font-size: 1.2rem;
-      border: none;
+      padding: 1rem 2rem;
+      background: $primary;
       border-radius: 999px;
-      background-color: $light;
-      outline: none;
-
-      &.disabled {
-        opacity: 0.1;
-        transform: scale(0.8);
-      }
+      border: none;
+      color: $light;
+      font-weight: bold;
 
       &:hover {
+        background: lighten($primary, 25%);
         transform: scale(1.1);
-        background-color: $primary;
+        text-decoration: underline;
+        outline: none;
       }
     }
   }
