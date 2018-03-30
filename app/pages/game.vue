@@ -2,9 +2,12 @@
   <div class="game">
     <div class="toolbar">
       <a href="#" class="btn no-margin" :class="{ active: debugMode }" @click="toggleDebug()"><i class="fas fa-code fa-fw"/> Debug</a>
-      <p v-if="game">Score: {{ game.score }}</p>
-      <p v-if="game">Snapshots: {{ game.snapshots.length }}</p>
       <a href="#" class="btn small" @click="showSnapshot()"><i class="fas fa-camera-retro fa-fw"/> Log Snapshot</a>
+      <a href="#" class="btn small" @click="showBrain()"><i class="fas fa-code-branch fa-fw"/> Log Brain</a>
+      <p>{{ name }}</p>
+      <a href="#" class="btn small active" @click="doExport()"><i class="fas fa-check fa-fw"/> Export</a>
+      <hr>
+      <p v-if="game">Score: {{ game.score }}</p>
       <hr>
       <a href="#" class="btn" @click="reset()"><i class="fas fa-undo-alt fa-fw"/> Reset</a>
       <a href="#" class="btn" @click="pause()" v-if="game && !game.isPaused" key="pause">
@@ -28,23 +31,47 @@
       <img src="/images/player_orange.png" id="player_orange"/>
       <img src="/images/player_red.png" id="player_red"/>
     </canvas>
+    <div class="toolbar-container dark" v-if="game">
+      <div class="toolbar dark">
+        <pre>State Snapshot: {{ this.game.snapshot }}</pre>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { start } from '@/assets/game';
+import { getFunName } from '@/assets/helpers';
 
 export default {
   data() {
     return {
       debugMode: false,
-      game: null
+      game: null,
+      name: getFunName()
     };
   },
   mounted() {
     this.reset();
   },
+  beforeDestroy() {
+    this.game.halt();
+  },
   methods: {
+    doExport() {
+      const score = this.game.score;
+      const brain = this.game.brain.toJSON();
+      // Store the brain, and score!
+      const data = {
+        score,
+        brain,
+        date: Date.now()
+      };
+      // Push to localstorage
+      localStorage.setItem('neural:brain:' + this.name, JSON.stringify(data));
+      //
+      this.$router.push('/export/' + this.name);
+    },
     reset() {
       if (this.game) this.game.halt();
       this.game = start(this.$refs.canvas);
@@ -55,10 +82,11 @@ export default {
     play() {
       this.game.resume();
     },
+    showBrain() {
+      console.log(this.game.brain);
+    },
     showSnapshot() {
-      console.log(
-        JSON.stringify(this.game.snapshots[this.game.snapshots.length - 1])
-      );
+      console.log(JSON.stringify(this.game.snapshot));
     },
     toggleDebug() {
       this.debugMode = !this.debugMode;
@@ -74,8 +102,8 @@ export default {
 #canvas {
   transition: background-color 150ms ease-out, opacity 150ms ease-out;
   display: block;
-  background-color: rgba(0, 0, 190, 0.05);
-  border-top: 4px solid #444;
+  background-color: #234;
+  border-top: 4px solid $primary;
   margin-bottom: 0;
 
   &.paused {
@@ -84,26 +112,42 @@ export default {
   }
 }
 
+.toolbar-container {
+  &.dark {
+    background-color: $dark;
+  }
+}
+
 .game {
   background-color: $light;
   border-radius: 3px;
   box-shadow: 0 3px 9px rgba($dark, 0.5);
 
-  > .toolbar {
+  .toolbar {
+    transition: opacity 300ms ease-out;
     display: flex;
     align-items: center;
     padding: 0.3rem;
+    color: $primary;
+
+    &.invisible {
+      opacity: 0;
+    }
+
+    &.dark {
+      color: lighten($primary, 30%);
+    }
 
     > hr {
       flex: 1;
       visibility: hidden;
     }
 
-    > p {
+    > p,
+    > pre {
       padding: 0.3rem 0.5rem;
       font-size: 0.8rem;
       font-weight: bold;
-      color: $primary;
     }
 
     > a.btn {
@@ -113,7 +157,6 @@ export default {
       padding: 0.3rem 0.5rem;
       font-weight: bold;
       text-decoration: none;
-      color: $primary;
       margin-left: 0.5rem;
 
       &.no-margin {

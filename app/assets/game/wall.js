@@ -36,7 +36,7 @@ export default class Wall {
    * @param {CanvasRenderingContext2D} gc The graphics context
    */
   draw(gc) {
-    gc.fillStyle = 'black';
+    gc.fillStyle = '#ffc0c0';
     // Top part
     gc.fillRect(this.x, 0, this.w, this.y - this.size * 0.5);
     // Bottom part

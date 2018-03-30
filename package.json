@@ -20,5 +20,8 @@
     "node-sass": "^4.7.2",
     "nuxt": "^1.4.0",
     "sass-loader": "^6.0.7"
+  },
+  "dependencies": {
+    "synaptic": "^1.1.4"
   }
 }

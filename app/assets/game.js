@@ -1,3 +1,5 @@
+import { Architect } from 'synaptic';
+
 import Bullet from './game/bullet';
 import Player from './game/player';
 import Wall from './game/wall';
@@ -8,9 +10,9 @@ import { createSnapshot } from './snapshot';
  * @param {HTMLCanvasElement} canvas The canvas to begin the game on
  * @returns {Game} The game
  */
-export function start(canvas) {
+export function start(canvas, brain) {
   // Construct the game
-  return new Game(canvas);
+  return new Game(canvas, brain);
 }
 
 export const WIDTH = 1300;
@@ -37,19 +39,22 @@ class Game {
     this.isDebugMode = false;
     this.keys = {};
     this.player = new Player(this.sprites.player_blue, 16, HEIGHT / 2 - 16);
-    this.brain = brain;
     this.bullets = [];
     this.walls = [];
     this.wallGap = 600;
     this.speed = 1;
     this.score = 0;
-    this.snapshots = [];
     this.isPaused = true;
+    this.snapshot = null;
     this.keydownhandler = e => this.keydown(e);
     this.keyuphandler = e => this.keyup(e);
 
+    this.useBrain = !!brain;
+    this.brain = this.useBrain ? brain : new Architect.Perceptron(2, 6, 6, 3);
+    this.learningRate = 0.05;
+
     // Register event handlers if brain is null
-    if (undefined === this.brain) {
+    if (!this.useBrain) {
       document.addEventListener('keydown', this.keydownhandler, false);
       document.addEventListener('keyup', this.keyuphandler, false);
     }
@@ -96,20 +101,27 @@ class Game {
       }
     });
     // OK, if we have a brain, get our keystates
-    if (this.brain) {
-      // Activate brain
+    this.snapshot = createSnapshot(this);
+    if (this.useBrain) {
+      // Activate brain, use the input snapshot to generate keys
       // Map brain output to keystates
+      const output = this.brain.activate(this.snapshot.input);
+      // 0 = UP, 1 = DOWN, 2 = FIRE
+      this.keys.KeyW = output[0] >= 0.5;
+      this.keys.KeyS = output[1] >= 0.5;
+      this.keys.Space = output[2] >= 0.5;
     } else {
-      // No thingy, so take a snapshot of current game state
-      // And map to key states
-      const snapshot = createSnapshot(this);
-      this.snapshots.push(snapshot);
+      // Push snapshot through network brain to train
+      // Activate the brain first
+      this.brain.activate(this.snapshot.input);
+      // Now back-prop with the output
+      this.brain.propagate(this.learningRate, this.snapshot.output);
     }
     // Update the player
     this.player.update(this.speed, this.keys);
     // Does the player want to find a bullet
     if (this.player.wantsToFire) {
-      this.player.fireWait = Math.floor(200 / this.speed / 16); // Ticks to wait
+      this.player.fireWait = Math.floor(200 / 16); // Ticks to wait
       this.player.wantsToFire = false;
       this.firePlayerBullet(
         this.player.x + this.player.w * 0.5,
@@ -144,6 +156,11 @@ class Game {
    */
   keydown(e) {
     this.keys[e.code] = true;
+    if (e.code === 'KeyP') {
+      if (this.isPaused) this.resume();
+      else this.pause();
+    }
+    e.preventDefault();
   }
 
   /**
@@ -151,6 +168,7 @@ class Game {
    */
   keyup(e) {
     this.keys[e.code] = false;
+    e.preventDefault();
   }
 
   debugMode(activate) {
