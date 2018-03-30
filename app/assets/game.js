@@ -1,6 +1,7 @@
 import Bullet from './game/bullet';
 import Player from './game/player';
 import Wall from './game/wall';
+import { createSnapshot } from './snapshot';
 
 /**
  * Start the game
@@ -32,6 +33,8 @@ class Game {
     this.wallGap = 600;
     this.speed = 1;
     this.score = 0;
+    this.snapshots = [];
+    this.isPaused = true;
     this.keydownhandler = e => this.keydown(e);
     this.keyuphandler = e => this.keyup(e);
 
@@ -48,6 +51,18 @@ class Game {
     }
 
     // Begin update loop
+    this.resume();
+  }
+
+  pause() {
+    if (this.isPaused) return;
+    this.isPaused = true;
+    clearInterval(this.interval);
+  }
+
+  resume() {
+    if (!this.isPaused) return;
+    this.isPaused = false;
     this.interval = setInterval(_ => {
       this.update();
     }, 16); // 60FPS
@@ -60,10 +75,6 @@ class Game {
   }
 
   update() {
-    // If there is a brain, update it
-    if (this.brain) {
-      // Update brain
-    }
     // Update the walls
     const maxWallX = this.walls.reduce((p, c) => (c.x > p ? c.x : p), 0);
     this.walls.forEach((w, i) => {
@@ -74,6 +85,16 @@ class Game {
         this.score += 50;
       }
     });
+    // OK, if we have a brain, get our keystates
+    if (this.brain) {
+      // Activate brain
+      // Map brain output to keystates
+    } else {
+      // No thingy, so take a snapshot of current game state
+      // And map to key states
+      const snapshot = createSnapshot(this);
+      this.snapshots.push(snapshot);
+    }
     // Update the player
     this.player.update(this.speed, this.keys);
     // Does the player want to find a bullet

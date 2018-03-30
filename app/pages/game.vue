@@ -3,11 +3,18 @@
     <div class="toolbar">
       <a href="#" class="btn no-margin" :class="{ active: debugMode }" @click="toggleDebug()"><i class="fas fa-code fa-fw"/> Debug</a>
       <p v-if="game">Score: {{ game.score }}</p>
+      <p v-if="game">Snapshots: {{ game.snapshots.length }}</p>
       <hr>
       <a href="#" class="btn" @click="reset()"><i class="fas fa-undo-alt fa-fw"/> Reset</a>
+      <a href="#" class="btn" @click="pause()" v-if="game && !game.isPaused" key="pause">
+        <i class="fas fa-pause fa-fw"/> Pause
+      </a>
+      <a href="#" class="btn" @click="play()" v-if="game && game.isPaused" key="play">
+        <i class="fas fa-play fa-fw"/> Play
+      </a>
       <nuxt-link to="/" class="btn"><i class="fas fa-caret-square-left fa-fw"/> Go Back</nuxt-link>
     </div>
-    <canvas id="canvas" ref="canvas" width="1300" height="600"/>
+    <canvas id="canvas" ref="canvas" width="1300" height="600" :class="{ paused : game && game.isPaused }"/>
   </div>
 </template>
 
@@ -29,6 +36,12 @@ export default {
       if (this.game) this.game.halt();
       this.game = start(this.$refs.canvas);
     },
+    pause() {
+      this.game.pause();
+    },
+    play() {
+      this.game.resume();
+    },
     toggleDebug() {
       this.debugMode = !this.debugMode;
       this.game.debugMode(this.debugMode);
@@ -41,10 +54,16 @@ export default {
 @import '../assets/vars';
 
 #canvas {
+  transition: background-color 150ms ease-out, opacity 150ms ease-out;
   display: block;
   background-color: rgba(0, 0, 190, 0.05);
   border-top: 4px solid #444;
   margin-bottom: 0;
+
+  &.paused {
+    opacity: 0.5;
+    background-color: rgba(0, 0, 90, 0.5);
+  }
 }
 
 .game {
