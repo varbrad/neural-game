@@ -2,10 +2,11 @@
   <div class="game">
     <div class="toolbar">
       <a href="#" class="btn" :class="{ active: debugMode }" @click="toggleDebug()"><i class="fas fa-code fa-fw"/> Debug</a>
+      <p v-if="game">Score: {{ game.score }}</p>
       <hr>
       <nuxt-link to="/" class="btn"><i class="fas fa-caret-square-left fa-fw"/> Go Back</nuxt-link>
     </div>
-    <canvas id="canvas" ref="canvas" width="900" height="600"/>
+    <canvas id="canvas" ref="canvas" width="1300" height="600"/>
   </div>
 </template>
 
@@ -26,7 +27,6 @@ export default {
   methods: {
     toggleDebug() {
       this.debugMode = !this.debugMode;
-      console.log(this.game);
       this.game.debugMode(this.debugMode);
     }
   }
@@ -35,6 +35,13 @@ export default {
 
 <style lang="scss" scoped>
 @import '../assets/vars';
+
+#canvas {
+  display: block;
+  background-color: rgba(0, 0, 190, 0.05);
+  border-top: 4px solid #444;
+  margin-bottom: 0;
+}
 
 .game {
   background-color: $light;
@@ -48,6 +55,13 @@ export default {
     > hr {
       flex: 1;
       visibility: hidden;
+    }
+
+    > p {
+      padding: 0.3rem 0.5rem;
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: $primary;
     }
 
     > a.btn {
