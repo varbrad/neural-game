@@ -1,6 +1,9 @@
 <template>
   <section class="index">
     <h1>Activity Consent</h1>
+    <div class="toolbar top">
+      <nuxt-link class="left-margin" to="/list"><i class="fas fa-list-ol fa-fw"/> View Generated AI Agents</nuxt-link>
+    </div>
     <div class="list">
       <p class="item" v-for="(item, i) in checklist" :key="i">
         <span class="no">{{ i + 1 }}</span>
@@ -102,6 +105,14 @@ export default {
     justify-content: center;
     margin: 0 -1rem -1rem -1rem;
 
+    &.top {
+      margin: -1rem -1rem 0 -1rem;
+
+      > .left-margin {
+        margin-left: auto;
+      }
+    }
+
     &.hover {
       background-color: rgba($primary, 0.8);
 
@@ -117,6 +128,19 @@ export default {
       align-items: center;
       justify-content: space-around;
       transform: scale(0.5);
+    }
+
+    > a {
+      font-size: 0.8rem;
+      padding: 0.4rem 0.6rem;
+      border: 1px solid darken($light, 10%);
+      border-radius: 3px;
+      color: $primary;
+      text-decoration: none;
+
+      &:hover {
+        background-color: darken($light, 5%);
+      }
     }
 
     > button {

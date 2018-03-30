@@ -1,4 +1,4 @@
-import { Architect } from 'synaptic';
+import { Architect, Trainer } from 'synaptic';
 
 import Bullet from './game/bullet';
 import Player from './game/player';
@@ -42,16 +42,16 @@ class Game {
     this.bullets = [];
     this.walls = [];
     this.wallGap = 600;
-    this.speed = 1;
+    this.speed = 3;
     this.score = 0;
     this.isPaused = true;
     this.snapshot = null;
+    this.snapshots = [];
     this.keydownhandler = e => this.keydown(e);
     this.keyuphandler = e => this.keyup(e);
 
     this.useBrain = !!brain;
-    this.brain = this.useBrain ? brain : new Architect.Perceptron(2, 6, 6, 3);
-    this.learningRate = 0.05;
+    this.brain = this.useBrain ? brain : new Architect.Perceptron(4, 6, 6, 3);
 
     // Register event handlers if brain is null
     if (!this.useBrain) {
@@ -67,6 +67,19 @@ class Game {
 
     // Begin update loop
     this.resume();
+  }
+
+  train(callback) {
+    this.halt();
+    const trainer = new Trainer(this.brain);
+    return trainer.trainAsync(this.snapshots, {
+      iterations: 25000,
+      rate: 1,
+      schedule: {
+        every: 500,
+        do: callback
+      }
+    });
   }
 
   pause() {
@@ -90,12 +103,15 @@ class Game {
   }
 
   update() {
+    this.learningRate *= 0.999;
     // Update the walls
     const maxWallX = this.walls.reduce((p, c) => (c.x > p ? c.x : p), 0);
     this.walls.forEach((w, i) => {
       if (w.update(this.speed)) {
         // This wall needs to move
         w.x = maxWallX + this.wallGap;
+        // Randomize the wall
+        w.setRandomY();
         // Award some points!
         this.score += 50;
       }
@@ -112,10 +128,7 @@ class Game {
       this.keys.Space = output[2] >= 0.5;
     } else {
       // Push snapshot through network brain to train
-      // Activate the brain first
-      this.brain.activate(this.snapshot.input);
-      // Now back-prop with the output
-      this.brain.propagate(this.learningRate, this.snapshot.output);
+      this.snapshots.push(this.snapshot);
     }
     // Update the player
     this.player.update(this.speed, this.keys);

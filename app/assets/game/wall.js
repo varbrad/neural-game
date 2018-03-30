@@ -18,8 +18,12 @@ export default class Wall {
 
     if (this.y === undefined) {
       // Random y
-      this.y = random(this.size * 0.5, HEIGHT - this.size * 0.5);
+      this.setRandomY();
     }
+  }
+
+  setRandomY() {
+    this.y = random(this.size * 0.5, HEIGHT - this.size * 0.5);
   }
 
   /**

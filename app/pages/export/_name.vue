@@ -1,6 +1,11 @@
 <template>
   <section class="export">
-    <h1>{{ $route.params.name }}</h1>
+    <h1>
+      {{ $route.params.name }}
+      <span v-if="game" class="score">Score: {{ game.score }}</span>
+      <span class="right small">Score: {{ score }}</span>
+      <span class="small">Date: {{ formattedDate }}</span>
+    </h1>
     <div class="content">
       <canvas id="canvas" ref="canvas" width="1300" height="600" :class="{ paused : game && game.isPaused }">
         <img src="/images/enemy_1.png" id="enemy_1"/>
@@ -15,7 +20,6 @@
         <img src="/images/player_orange.png" id="player_orange"/>
         <img src="/images/player_red.png" id="player_red"/>
       </canvas>
-      <p class="small center">Recorded at: {{ formattedDate }}</p>
     </div>
     <div class="toolbar">
       <nuxt-link to="/"><i class="fas fa-home fa-fw"/> Home</nuxt-link>
@@ -42,6 +46,7 @@ export default {
   },
   mounted() {
     this.reset();
+    console.log(this.brain);
   },
   beforeDestroy() {
     this.game.halt();
@@ -67,6 +72,20 @@ export default {
 <style lang="scss" scoped>
 @import '../../assets/vars';
 
+#canvas {
+  transition: background-color 150ms ease-out, opacity 150ms ease-out;
+  display: block;
+  background-color: #456;
+  margin-bottom: 0;
+  border-radius: 3px;
+  margin: -0.5rem -1.5rem;
+
+  &.paused {
+    opacity: 0.5;
+    background-color: rgba(0, 0, 90, 0.5);
+  }
+}
+
 .export {
   padding: 1rem;
   background-color: $light;
@@ -74,6 +93,7 @@ export default {
   overflow: hidden;
 
   > h1 {
+    display: flex;
     padding: 1rem 2rem;
     margin: -1rem -1rem 0 -1rem;
     border-bottom: 1px solid $dark;
@@ -81,6 +101,27 @@ export default {
     font-weight: 300;
     background-color: lighten($primary, 50%);
     color: $primary;
+    align-items: center;
+
+    > .score {
+      font-weight: bold;
+      font-size: 1rem;
+      margin-left: 1rem;
+    }
+
+    > .small {
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-left: 1rem;
+      padding: 0.2rem 0.4rem;
+      border: 1px solid rgba($dark, 0.2);
+      background-color: rgba($light, 0.2);
+      border-radius: 3px;
+    }
+
+    > .right {
+      margin-left: auto;
+    }
   }
 
   > .content {
