@@ -10,8 +10,16 @@
     <div class="notice">
       <p>By clicking 'I Agree to Participate' below, you are confirming that you have read the provided information sheet and are happy to proceed.</p>
     </div>
-    <div class="toolbar">
-      <button @click="start()"><i class="fas fa-check fa-fw"/> I Agree to Participate</button>
+    <div class="toolbar" :class="{hover}">
+      <div class="side">
+        <img src="/images/player_blue.png"/>
+        <img src="/images/player_bullet.png"/>
+      </div>
+      <button @click="start()" @mouseover="hover = true" @mouseout="hover = false"><i class="fas fa-check fa-fw"/> I Agree to Participate</button>
+      <div class="side">
+        <img src="/images/enemy_bullet.png"/>
+        <img src="/images/enemy_1.png"/>
+      </div>
     </div>
   </section>
 </template>
@@ -20,6 +28,7 @@
 export default {
   data() {
     return {
+      hover: false,
       checklist: [
         'I have received and read the provided Participant Information Sheet.',
         'The activity has been fully explained, and I understand what my participation will involve.',
@@ -50,6 +59,8 @@ export default {
     border-bottom: 1px solid $dark;
     font-size: 2rem;
     font-weight: 300;
+    background-color: lighten($primary, 50%);
+    color: $primary;
   }
 
   > .list {
@@ -84,23 +95,42 @@ export default {
   }
 
   > .toolbar {
+    transition: background-color 150ms ease-out;
     padding: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: 0 -1rem -1rem -1rem;
+
+    &.hover {
+      background-color: rgba($primary, 0.8);
+
+      > .side {
+        transform: scale(0.7);
+      }
+    }
+
+    > .side {
+      transition: transform 300ms ease-out;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      transform: scale(0.5);
+    }
 
     > button {
       transition: all 150ms ease-out;
       cursor: pointer;
       padding: 1rem 2rem;
-      background: $primary;
+      background: lighten($primary, 20%);
       border-radius: 999px;
       border: none;
       color: $light;
       font-weight: bold;
 
       &:hover {
-        background: lighten($primary, 25%);
+        background: $primary;
         transform: scale(1.1);
         text-decoration: underline;
         outline: none;

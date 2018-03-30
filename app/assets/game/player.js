@@ -5,7 +5,8 @@ export default class Player {
    * @param {Number} x Starting x-pos
    * @param {Number} y Starting y-pos
    */
-  constructor(x, y) {
+  constructor(sprite, x, y) {
+    this.sprite = sprite;
     this.x = x || 0;
     this.y = y || 0;
     this.dx = 0;
@@ -57,10 +58,14 @@ export default class Player {
    * @param {CanvasRenderingContext2D} gc The graphics context
    */
   draw(gc) {
-    gc.fillStyle = '#f29';
-    gc.beginPath();
-    gc.rect(this.x, this.y, this.w, this.h);
-    gc.closePath();
-    gc.fill();
+    if (!this.sprite) {
+      gc.fillStyle = '#f29';
+      gc.beginPath();
+      gc.rect(this.x, this.y, this.w, this.h);
+      gc.closePath();
+      gc.fill();
+    } else {
+      gc.drawImage(this.sprite, this.x, this.y, this.w, this.h);
+    }
   }
 }

@@ -5,7 +5,8 @@ export default class Bullet {
    * @param {Number} x Starting x-pos
    * @param {Number} y Starting y-pos
    */
-  constructor(x, y, dx, dy, speed, label) {
+  constructor(sprite, x, y, dx, dy, speed, label) {
+    this.sprite = sprite;
     this.x = x || 0;
     this.y = y || 0;
     this.dx = dx || 0;
@@ -30,14 +31,24 @@ export default class Bullet {
    * @param {CanvasRenderingContext2D} gc The graphics context
    */
   draw(gc) {
-    gc.fillStyle = '#f11';
-    gc.save();
-    gc.translate(this.x, this.y);
-    gc.rotate(0.785); // 45 degrees
-    gc.beginPath();
-    gc.rect(-this.r, -this.r, this.r * 2, this.r * 2);
-    gc.closePath();
-    gc.fill();
-    gc.restore();
+    if (!this.sprite) {
+      gc.fillStyle = '#f11';
+      gc.save();
+      gc.translate(this.x, this.y);
+      gc.rotate(0.785); // 45 degrees
+      gc.beginPath();
+      gc.rect(-this.r, -this.r, this.r * 2, this.r * 2);
+      gc.closePath();
+      gc.fill();
+      gc.restore();
+    } else {
+      gc.drawImage(
+        this.sprite,
+        this.x,
+        this.y - this.r,
+        this.r * 6,
+        this.r * 2
+      );
+    }
   }
 }

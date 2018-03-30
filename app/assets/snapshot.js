@@ -4,7 +4,9 @@ export function createSnapshot(game) {
       speed: game.speed
     },
     output: {
-      keys: game.keys
+      up: game.keys.KeyW || game.keys.ArrowUp,
+      down: game.keys.KeyS || game.keys.ArrowDown,
+      fire: game.keys.Space
     }
   };
 }

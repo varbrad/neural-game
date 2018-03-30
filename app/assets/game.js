@@ -22,11 +22,21 @@ class Game {
    * @param {HTMLCanvasElement} canvas The canvas
    */
   constructor(canvas, brain) {
+    // Get sprites
+    this.sprites = {
+      enemy_1: document.getElementById('enemy_1'),
+      enemy_2: document.getElementById('enemy_2'),
+      player_blue: document.getElementById('player_blue'),
+      player_bullet: document.getElementById('player_bullet'),
+      player_orange: document.getElementById('player_orange'),
+      player_red: document.getElementById('player_red')
+    };
+
     this.canvas = canvas;
     this.gc = canvas.getContext('2d');
     this.isDebugMode = false;
     this.keys = {};
-    this.player = new Player(16, HEIGHT / 2 - 16);
+    this.player = new Player(this.sprites.player_blue, 16, HEIGHT / 2 - 16);
     this.brain = brain;
     this.bullets = [];
     this.walls = [];
@@ -126,7 +136,7 @@ class Game {
   }
 
   firePlayerBullet(x, y) {
-    this.bullets.push(new Bullet(x, y, 1, 0, 8));
+    this.bullets.push(new Bullet(this.sprites.player_bullet, x, y, 1, 0, 8));
   }
 
   /**
