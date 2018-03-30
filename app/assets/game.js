@@ -74,7 +74,7 @@ class Game {
     const trainer = new Trainer(this.brain);
     return trainer.trainAsync(this.snapshots, {
       iterations: 25000,
-      rate: 1,
+      rate: 0.1,
       schedule: {
         every: 500,
         do: callback
