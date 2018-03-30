@@ -32,11 +32,13 @@ class Game {
     this.wallGap = 600;
     this.speed = 1;
     this.score = 0;
+    this.keydownhandler = e => this.keydown(e);
+    this.keyuphandler = e => this.keyup(e);
 
     // Register event handlers if brain is null
     if (undefined === this.brain) {
-      document.addEventListener('keydown', e => this.keydown(e), false);
-      document.addEventListener('keyup', e => this.keyup(e), false);
+      document.addEventListener('keydown', this.keydownhandler, false);
+      document.addEventListener('keyup', this.keyuphandler, false);
     }
 
     // Setup initial 5 walls (enough to cover entire screen)
@@ -49,6 +51,12 @@ class Game {
     this.interval = setInterval(_ => {
       this.update();
     }, 16); // 60FPS
+  }
+
+  halt() {
+    document.removeEventListener('keydown', this.keydownhandler);
+    document.removeEventListener('keyup', this.keyuphandler);
+    clearInterval(this.interval);
   }
 
   update() {

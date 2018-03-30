@@ -1,9 +1,10 @@
 <template>
   <div class="game">
     <div class="toolbar">
-      <a href="#" class="btn" :class="{ active: debugMode }" @click="toggleDebug()"><i class="fas fa-code fa-fw"/> Debug</a>
+      <a href="#" class="btn no-margin" :class="{ active: debugMode }" @click="toggleDebug()"><i class="fas fa-code fa-fw"/> Debug</a>
       <p v-if="game">Score: {{ game.score }}</p>
       <hr>
+      <a href="#" class="btn" @click="reset()"><i class="fas fa-undo-alt fa-fw"/> Reset</a>
       <nuxt-link to="/" class="btn"><i class="fas fa-caret-square-left fa-fw"/> Go Back</nuxt-link>
     </div>
     <canvas id="canvas" ref="canvas" width="1300" height="600"/>
@@ -21,10 +22,13 @@ export default {
     };
   },
   mounted() {
-    let c = this.$refs.canvas;
-    this.game = start(c);
+    this.reset();
   },
   methods: {
+    reset() {
+      if (this.game) this.game.halt();
+      this.game = start(this.$refs.canvas);
+    },
     toggleDebug() {
       this.debugMode = !this.debugMode;
       this.game.debugMode(this.debugMode);
@@ -72,6 +76,11 @@ export default {
       font-weight: bold;
       text-decoration: none;
       color: $primary;
+      margin-left: 0.5rem;
+
+      &.no-margin {
+        margin: 0;
+      }
 
       > .svg-inline--fa {
         margin-right: 0.3rem;
