@@ -51,7 +51,7 @@ class Game {
     this.keyuphandler = e => this.keyup(e);
 
     this.useBrain = !!brain;
-    this.brain = this.useBrain ? brain : new Architect.Perceptron(4, 6, 6, 3);
+    this.brain = this.useBrain ? brain : new Architect.Perceptron(5, 6, 6, 3);
 
     // Register event handlers if brain is null
     if (!this.useBrain) {

@@ -13,7 +13,8 @@ export function createSnapshot(game) {
       game.speed / 5, // GAME SPEED -> 5 should be the maximum game speed,
       game.player.y / HEIGHT, // PLAYER Y POS -> 0 = very top, 1 = very bottom
       nextWall.x / WIDTH, // NEXT WALL X -> 0 = Very Close, 1 = Very Far,
-      (game.player.y - nextWall.y) / HEIGHT + 0.5 // NEXT WALL Y -> 0 = Too High, 1 = Too Low, 0.5 = Just Right
+      (game.player.y - nextWall.y) / HEIGHT + 0.5, // NEXT WALL Y -> 0 = Too High, 1 = Too Low, 0.5 = Just Right,
+      nextWall.size / 250 // WALL GAP SIZE, 0 = Non-existant small, 1 = 250 pixels
     ],
     output: [
       game.keys.KeyW || game.keys.ArrowUp ? 1 : 0,

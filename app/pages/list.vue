@@ -7,7 +7,7 @@
         <nuxt-link :to="'/export/' + ai.name">{{ ai.name }}</nuxt-link>
         <p class="big">Score: {{ ai.score }}</p>
         <p class="small">{{ formatDate(ai.date) }}</p>
-        <p class="small"><strong>Error</strong><br>{{ (ai.error * 100).toFixed(1) }}%</p>
+        <p class="small"><strong>Error</strong><br>{{ (ai.error * 100).toFixed(2) }}%</p>
         <p class="small"><strong>Timings</strong><br>{{ (ai.time / 1000).toFixed(1) }}k</p>
         <a href="#" @click="remove(i)"><i class="fas fa-trash-alt fa-fw"/> DELETE</a>
       </div>

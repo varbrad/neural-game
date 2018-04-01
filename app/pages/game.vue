@@ -42,7 +42,7 @@
       <h1>Training AI</h1>
       <progress max="25000" :value="data.iterations"/>
       <p class="data">Iterations: {{ data.iterations }} / 25000</p>
-      <p class="data">Error Rate: {{ data.error.toFixed(5) }}</p>
+      <p class="data">Error Rate: {{ (data.error * 100).toFixed(2) }}%</p>
       <p class="data">Learning Rate: {{ data.rate }}</p>
       <p class="data">Snapshots: {{ game.snapshots.length }}</p>
     </div>
