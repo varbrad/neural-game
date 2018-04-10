@@ -90,9 +90,9 @@ export default {
 
   > .notice {
     text-align: center;
-    max-width: 460px;
+    max-width: 560px;
     margin: 0 auto;
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     font-weight: bold;
     padding: 1rem;
   }
@@ -154,9 +154,10 @@ export default {
       font-weight: bold;
 
       &:hover {
-        background: $primary;
-        transform: scale(1.1);
+        background: $light;
+        transform: scale(1.2);
         text-decoration: underline;
+        color: $primary;
         outline: none;
       }
     }
