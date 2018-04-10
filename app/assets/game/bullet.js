@@ -11,7 +11,8 @@ export default class Bullet {
     this.y = y || 0;
     this.dx = dx || 0;
     this.dy = dy || 0;
-    this.r = 5;
+    this.w = 30;
+    this.h = 10;
     this.speed = speed;
     this.label = label || '?';
   }
@@ -31,24 +32,6 @@ export default class Bullet {
    * @param {CanvasRenderingContext2D} gc The graphics context
    */
   draw(gc) {
-    if (!this.sprite) {
-      gc.fillStyle = '#f11';
-      gc.save();
-      gc.translate(this.x, this.y);
-      gc.rotate(0.785); // 45 degrees
-      gc.beginPath();
-      gc.rect(-this.r, -this.r, this.r * 2, this.r * 2);
-      gc.closePath();
-      gc.fill();
-      gc.restore();
-    } else {
-      gc.drawImage(
-        this.sprite,
-        this.x,
-        this.y - this.r,
-        this.r * 6,
-        this.r * 2
-      );
-    }
+    gc.drawImage(this.sprite, this.x, this.y, this.w, this.h);
   }
 }

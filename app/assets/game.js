@@ -4,6 +4,7 @@ import Bullet from './game/bullet';
 import Player from './game/player';
 import Wall from './game/wall';
 import { createSnapshot } from './snapshot';
+import { aabb } from './utils';
 
 /**
  * Start the game
@@ -158,6 +159,36 @@ class Game {
 
   collisionChecks() {
     // Is the player colliding with a wall?
+    // Loop thru all bullets
+    this.bullets.forEach((b, i) => {
+      // Loop thru walls
+      this.walls.forEach(w => {
+        // Are they colliding?
+        let rects = this.wallRectangles(w);
+        rects.forEach(r => {
+          if (aabb(b, r)) {
+            this.bullets.splice(i, 1);
+          }
+        });
+      });
+    });
+  }
+
+  wallRectangles(w) {
+    let wallX = w.x;
+    let top = {
+      x: wallX,
+      y: 0,
+      w: w.w,
+      h: w.y - w.size * 0.5
+    };
+    let bottom = {
+      x: wallX,
+      y: w.y + w.size * 0.5,
+      w: w.w,
+      h: HEIGHT - w.y - w.size * 0.5
+    };
+    return [top, bottom];
   }
 
   draw() {
@@ -169,6 +200,7 @@ class Game {
 
     if (this.isDebugMode) {
       // Draw hit boxes
+      // Player
       this.gc.strokeStyle = 'red';
       this.gc.lineWidth = 2;
       this.gc.strokeRect(
@@ -177,6 +209,17 @@ class Game {
         this.player.w,
         this.player.h
       );
+      // Bullets
+      this.bullets.forEach(b => {
+        this.gc.strokeRect(b.x, b.y, b.w, b.h);
+      });
+      // Walls
+      this.walls.forEach(w => {
+        const parts = this.wallRectangles(w);
+        parts.forEach(p => {
+          this.gc.strokeRect(p.x, p.y, p.w, p.h);
+        });
+      });
     }
   }
 
