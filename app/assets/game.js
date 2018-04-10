@@ -146,10 +146,18 @@ class Game {
       const remove = b.update(this.speed);
       if (remove) this.bullets.splice(i, 1);
     });
+
+    // Collision checks
+    this.collisionChecks();
+
     // Tick score
     this.score += 1;
-    //
+    // Draw the scene
     this.draw();
+  }
+
+  collisionChecks() {
+    // Is the player colliding with a wall?
   }
 
   draw() {
@@ -158,6 +166,18 @@ class Game {
     this.bullets.forEach(b => b.draw(this.gc));
     this.player.draw(this.gc);
     this.walls.forEach(w => w.draw(this.gc));
+
+    if (this.isDebugMode) {
+      // Draw hit boxes
+      this.gc.strokeStyle = 'red';
+      this.gc.lineWidth = 2;
+      this.gc.strokeRect(
+        this.player.x,
+        this.player.y,
+        this.player.w,
+        this.player.h
+      );
+    }
   }
 
   firePlayerBullet(x, y) {
@@ -172,6 +192,9 @@ class Game {
     if (e.code === 'KeyP') {
       if (this.isPaused) this.resume();
       else this.pause();
+    } else if (e.code === 'BracketLeft') {
+      // Toggle debug
+      this.debugMode(!this.isDebugMode);
     }
     e.preventDefault();
   }

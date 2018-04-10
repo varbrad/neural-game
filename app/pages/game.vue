@@ -2,20 +2,20 @@
   <div class="game">
     <template v-if="data === null">
       <div class="toolbar">
-        <a href="#" class="btn no-margin" :class="{ active: debugMode }" @click="toggleDebug()"><i class="fas fa-code fa-fw"/> Debug</a>
+        <a href="#" class="btn no-margin" :class="{ active: game && game.isDebugMode }" @click="toggleDebug()"><i class="fas fa-code fa-fw"/> Debug <span class="key">[</span></a>
         <a href="#" class="btn small" @click="showSnapshot()"><i class="fas fa-camera-retro fa-fw"/> Log Snapshot</a>
         <a href="#" class="btn small" @click="showBrain()"><i class="fas fa-code-branch fa-fw"/> Log Brain</a>
         <p>{{ name }}</p>
-        <a href="#" class="btn small active" @click="doExport()"><i class="fas fa-check fa-fw"/> Export</a>
+        <a href="#" class="btn small active" @click="doExport()"><i class="fas fa-check fa-fw"/> Export <span class="key">]</span></a>
         <hr>
         <p v-if="game">Score: {{ game.score }}</p>
         <hr>
         <a href="#" class="btn" @click="reset()"><i class="fas fa-undo-alt fa-fw"/> Reset</a>
         <a href="#" class="btn" @click="pause()" v-if="game && !game.isPaused" key="pause">
-          <i class="fas fa-pause fa-fw"/> Pause
+          <i class="fas fa-pause fa-fw"/> Pause <span class="key">P</span>
         </a>
         <a href="#" class="btn" @click="play()" v-if="game && game.isPaused" key="play">
-          <i class="fas fa-play fa-fw"/> Play
+          <i class="fas fa-play fa-fw"/> Play <span class="key">P</span>
         </a>
         <nuxt-link to="/" class="btn"><i class="fas fa-caret-square-left fa-fw"/> Go Back</nuxt-link>
       </div>
@@ -56,7 +56,6 @@ import { getFunName } from '@/assets/helpers';
 export default {
   data() {
     return {
-      debugMode: false,
       game: null,
       name: getFunName(),
       data: null
@@ -64,6 +63,8 @@ export default {
   },
   mounted() {
     this.reset();
+    // Add export shortcut
+    document.addEventListener('keydown', this.keydown);
   },
   beforeDestroy() {
     if (this.game) this.game.halt();
@@ -108,8 +109,13 @@ export default {
       console.log(JSON.stringify(this.game.snapshot));
     },
     toggleDebug() {
-      this.debugMode = !this.debugMode;
-      this.game.debugMode(this.debugMode);
+      this.game.debugMode(!this.game.isDebugMode);
+    },
+    keydown(e) {
+      if (e.code === 'BracketRight') {
+        document.removeEventListener('keydown', this.keydown);
+        this.doExport();
+      }
     }
   }
 };
