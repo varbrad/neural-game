@@ -122,7 +122,7 @@ export default {
 #canvas {
   transition: background-color 150ms ease-out, opacity 150ms ease-out;
   display: block;
-  background-color: #456;
+  background-color: black;
   border-top: 4px solid $primary;
   margin-bottom: 0;
 

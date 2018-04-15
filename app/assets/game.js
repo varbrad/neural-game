@@ -1,5 +1,5 @@
 import { Architect, Trainer } from 'synaptic';
-import { shuffle } from 'lodash';
+import { sample, shuffle } from 'lodash';
 
 import Bullet from './game/bullet';
 import Player from './game/player';
@@ -7,6 +7,7 @@ import Wall from './game/wall';
 import { createSnapshot } from './snapshot';
 import { aabb } from './utils';
 import keyOverlay from './key-overlay';
+import Enemy from './game/enemy';
 
 /**
  * Start the game
@@ -42,6 +43,7 @@ class Game {
     this.isDebugMode = false;
     this.keys = {};
     this.player = new Player(this.sprites.player_blue, 16, HEIGHT / 2 - 16);
+    this.enemy = null;
     this.bullets = [];
     this.walls = [];
     this.wallGap = 600;
@@ -54,7 +56,7 @@ class Game {
     this.keyuphandler = e => this.keyup(e);
 
     this.useBrain = !!brain;
-    this.brain = this.useBrain ? brain : new Architect.Perceptron(5, 6, 6, 3);
+    this.brain = this.useBrain ? brain : new Architect.Perceptron(7, 6, 6, 3);
 
     // Register event handlers if brain is null
     if (!this.useBrain) {
@@ -68,6 +70,10 @@ class Game {
       this.walls.push(wall);
     }
 
+    // Make first enemy in last wall
+    const randomWall = sample(this.walls);
+    this.enemy = new Enemy(randomWall.x, randomWall.y, this.sprites.enemy_1);
+
     // Begin update loop
     this.resume();
   }
@@ -77,7 +83,7 @@ class Game {
     const trainer = new Trainer(this.brain);
     return trainer.trainAsync(shuffle(this.snapshots), {
       iterations: 25000,
-      rate: 0.05,
+      rate: 0.02,
       schedule: {
         every: 500,
         do: callback
@@ -105,6 +111,18 @@ class Game {
     clearInterval(this.interval);
   }
 
+  newEnemy() {
+    const lastWall = this.walls.reduce(
+      (p, c) => (c.x > p.x ? c : p),
+      this.walls[0]
+    );
+    this.enemy = new Enemy(
+      lastWall.x,
+      lastWall.y,
+      sample([this.sprites.enemy_1, this.sprites.enemy_2])
+    );
+  }
+
   update() {
     this.learningRate *= 0.999;
     // Update the walls
@@ -119,6 +137,13 @@ class Game {
         this.score += 50;
       }
     });
+    // Update enemy
+    if (this.enemy) {
+      const remove = this.enemy.update(this.speed);
+      // If enemy went off left side of screen
+      if (remove) this.newEnemy();
+    }
+
     // OK, if we have a brain, get our keystates
     this.snapshot = createSnapshot(this);
     if (this.useBrain) {
@@ -173,6 +198,11 @@ class Game {
           }
         });
       });
+      // Enemy check
+      if (this.enemy && aabb(this.enemy, b)) {
+        // Hit enemy, killed it!
+        this.newEnemy();
+      }
     });
   }
 
@@ -195,11 +225,15 @@ class Game {
 
   draw() {
     this.gc.clearRect(0, 0, WIDTH, HEIGHT);
+
     // Draw bullets
     this.bullets.forEach(b => b.draw(this.gc));
 
     // Draw player
     this.player.draw(this.gc);
+
+    // Draw enemy
+    if (this.enemy) this.enemy.draw(this.gc);
 
     // Draw walls
     this.walls.forEach(w => w.draw(this.gc));

@@ -13,6 +13,7 @@ export default class Bullet {
     this.dy = dy || 0;
     this.w = 30;
     this.h = 10;
+    this.y -= 5;
     this.speed = speed;
     this.label = label || '?';
   }

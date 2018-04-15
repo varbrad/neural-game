@@ -3,7 +3,7 @@
     <h1>
       {{ $route.params.name }}
       <span v-if="game" class="score">Score: {{ game.score }}</span>
-      <span class="right small">Score: {{ score }}</span>
+      <span class="right small">Original Score: {{ score }}</span>
       <span class="small">Date: {{ formattedDate }}</span>
     </h1>
     <div class="content">
@@ -74,7 +74,7 @@ export default {
 #canvas {
   transition: background-color 150ms ease-out, opacity 150ms ease-out;
   display: block;
-  background-color: #456;
+  background-color: black;
   margin-bottom: 0;
   border-radius: 3px;
   margin: -0.5rem -1.5rem;
