@@ -7,7 +7,7 @@
       <span class="small">Date: {{ formattedDate }}</span>
     </h1>
     <div class="content">
-      <canvas id="canvas" ref="canvas" width="1300" height="600" :class="{ paused : game && game.isPaused }">
+      <canvas id="canvas" ref="canvas" width="1500" height="600" :class="{ paused : game && game.isPaused }">
         <img src="/images/enemy_1.png" id="enemy_1"/>
         <img src="/images/enemy_2.png" id="enemy_2"/>
         <img src="/images/enemy_3.png" id="enemy_3"/>

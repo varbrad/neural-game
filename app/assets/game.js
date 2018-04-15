@@ -16,7 +16,7 @@ export function start(canvas, brain) {
   return new Game(canvas, brain);
 }
 
-export const WIDTH = 1300;
+export const WIDTH = 1500;
 export const HEIGHT = 600;
 
 class Game {
