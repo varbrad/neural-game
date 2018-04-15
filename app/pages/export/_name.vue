@@ -46,7 +46,6 @@ export default {
   },
   mounted() {
     this.reset();
-    console.log(this.brain);
   },
   beforeDestroy() {
     this.game.halt();
