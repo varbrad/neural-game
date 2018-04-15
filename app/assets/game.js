@@ -5,6 +5,7 @@ import Player from './game/player';
 import Wall from './game/wall';
 import { createSnapshot } from './snapshot';
 import { aabb } from './utils';
+import keyOverlay from './key-overlay';
 
 /**
  * Start the game
@@ -195,8 +196,15 @@ class Game {
     this.gc.clearRect(0, 0, WIDTH, HEIGHT);
     // Draw bullets
     this.bullets.forEach(b => b.draw(this.gc));
+
+    // Draw player
     this.player.draw(this.gc);
+
+    // Draw walls
     this.walls.forEach(w => w.draw(this.gc));
+
+    // Draw key overlays
+    keyOverlay.draw(this.gc, this.keys, WIDTH, HEIGHT);
 
     if (this.isDebugMode) {
       // Draw hit boxes
