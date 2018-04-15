@@ -32,11 +32,6 @@
         <img src="/images/player_orange.png" id="player_orange"/>
         <img src="/images/player_red.png" id="player_red"/>
       </canvas>
-      <div class="toolbar-container dark" v-if="game">
-        <div class="toolbar dark">
-          <pre>State Snapshot: {{ this.game.snapshot }}</pre>
-        </div>
-      </div>
     </template>
     <div class="data-block" v-if="data">
       <h1>Training AI</h1>
