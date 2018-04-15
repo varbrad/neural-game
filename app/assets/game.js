@@ -1,4 +1,5 @@
 import { Architect, Trainer } from 'synaptic';
+import { shuffle } from 'lodash';
 
 import Bullet from './game/bullet';
 import Player from './game/player';
@@ -73,9 +74,9 @@ class Game {
   train(callback) {
     this.halt();
     const trainer = new Trainer(this.brain);
-    return trainer.trainAsync(this.snapshots, {
+    return trainer.trainAsync(shuffle(this.snapshots), {
       iterations: 25000,
-      rate: 0.1,
+      rate: 0.05,
       schedule: {
         every: 500,
         do: callback
