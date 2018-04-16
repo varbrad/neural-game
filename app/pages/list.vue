@@ -2,13 +2,14 @@
   <section class="list">
     <h1>Generated AI</h1>
     <div class="list">
-      <div class="list-item" v-for="(ai, i) in ais" :key="ai.date">
+      <div class="list-item" v-for="(ai, i) in ais" :key="ai.date" :class="{ fav: ai.fav }">
         <p class="rank">{{ i + 1 }}.</p>
         <nuxt-link :to="'/export/' + ai.name">{{ ai.name }}</nuxt-link>
         <p class="big">Score: {{ ai.score }}</p>
         <p class="small">{{ formatDate(ai.date) }}</p>
         <p class="small"><strong>Error</strong><br>{{ (ai.error * 100).toFixed(2) }}%</p>
         <p class="small"><strong>Timings</strong><br>{{ (ai.time / 1000).toFixed(1) }}k</p>
+        <a href="#" @click="fav(i)"><i class="fas fa-star fa-fw"/> Fav/Unfav</a>
         <a href="#" @click="remove(i)"><i class="fas fa-trash-alt fa-fw"/> DELETE</a>
       </div>
     </div>
@@ -46,7 +47,7 @@ export default {
       for (let i = this.ais.length - 1; i >= 0; --i) {
         const ai = this.ais[i];
         // Remove any with an error > .05 or a score < 1000
-        if (ai.error < 0.05 && ai.score > 1000) continue;
+        if (ai.error < 0.09 && ai.score > 500 && ai.time > 1000) continue;
         this.remove(i);
       }
     },
@@ -54,6 +55,11 @@ export default {
       const ai = this.ais[i];
       this.ais.splice(i, 1);
       localStorage.removeItem('neural:brain:' + ai.name);
+    },
+    fav(i) {
+      const ai = this.ais[i];
+      ai.fav = !ai.fav;
+      localStorage.setItem('neural:brain:' + ai.name, JSON.stringify(ai));
     }
   }
 };
@@ -86,7 +92,14 @@ export default {
       display: grid;
       align-items: center;
       padding: 0.5rem;
-      grid-template-columns: 3rem 2fr 1fr 1fr 1fr 1fr 1fr;
+      grid-template-columns: 3rem 2fr repeat(6, 1fr);
+
+      &.fav {
+        border-left: 3px solid $primary;
+        border-right: 3px solid $primary;
+        border-radius: 3px;
+        background-color: lighten($primary, 60%);
+      }
 
       > p,
       > a {

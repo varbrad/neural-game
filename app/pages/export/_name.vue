@@ -19,6 +19,7 @@
         <img src="/images/player_green.png" id="player_green"/>
         <img src="/images/player_orange.png" id="player_orange"/>
         <img src="/images/player_red.png" id="player_red"/>
+        <img src="/images/star.png" id="star"/>
       </canvas>
     </div>
     <div class="toolbar">

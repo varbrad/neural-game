@@ -8,6 +8,7 @@ import { createSnapshot } from './snapshot';
 import { aabb } from './utils';
 import keyOverlay from './key-overlay';
 import Enemy from './game/enemy';
+import Star from './game/star';
 
 /**
  * Start the game
@@ -36,7 +37,8 @@ class Game {
       player_blue: document.getElementById('player_blue'),
       player_bullet: document.getElementById('player_bullet'),
       player_orange: document.getElementById('player_orange'),
-      player_red: document.getElementById('player_red')
+      player_red: document.getElementById('player_red'),
+      star: document.getElementById('star')
     };
 
     this.canvas = canvas;
@@ -47,6 +49,7 @@ class Game {
     this.enemy = null;
     this.bullets = [];
     this.walls = [];
+    this.stars = [];
     this.wallGap = 600;
     this.speed = 3;
     this.score = 0;
@@ -70,6 +73,11 @@ class Game {
     for (let i = 0; i < 5; ++i) {
       const wall = new Wall(WIDTH + this.wallGap * i);
       this.walls.push(wall);
+    }
+
+    for (let i = 0; i < 50; ++i) {
+      const star = new Star(this.sprites.star);
+      this.stars.push(star);
     }
 
     // Make first enemy in last wall
@@ -127,6 +135,12 @@ class Game {
 
   update() {
     if (!this.gameOver) {
+      // pdate the stars
+      this.stars.forEach((s, i) => {
+        if (s.update(this.speed)) {
+          s.x += WIDTH;
+        }
+      });
       // Update the walls
       const maxWallX = this.walls.reduce((p, c) => (c.x > p ? c.x : p), 0);
       this.walls.forEach((w, i) => {
@@ -213,6 +227,10 @@ class Game {
         }
       });
     });
+    // Is player colliding with an enemy?
+    if (aabb(this.player, this.enemy)) {
+      this.gameOver = true;
+    }
     // Loop thru all bullets
     this.bullets.forEach((b, i) => {
       // Loop thru walls
@@ -268,6 +286,9 @@ class Game {
   draw() {
     this.gc.clearRect(0, 0, WIDTH, HEIGHT);
 
+    // Draw stars
+    this.stars.forEach(s => s.draw(this.gc));
+
     // Draw bullets
     this.bullets.forEach(b => b.draw(this.gc));
 
@@ -291,8 +312,8 @@ class Game {
     if (this.isDebugMode) {
       // Draw hit boxes
       // Player
-      this.gc.strokeStyle = 'red';
-      this.gc.lineWidth = 2;
+      this.gc.strokeStyle = 'white';
+      this.gc.lineWidth = 4;
       this.gc.strokeRect(
         this.player.x + this.player.hitbox.x,
         this.player.y + this.player.hitbox.y,
@@ -313,7 +334,12 @@ class Game {
       this.walls.forEach(w => {
         const parts = this.wallRectangles(w);
         parts.forEach(p => {
-          this.gc.strokeRect(p.x, p.y, p.w, p.h);
+          this.gc.strokeRect(
+            p.x + p.hitbox.x,
+            p.y + p.hitbox.y,
+            p.hitbox.w,
+            p.hitbox.h
+          );
         });
       });
     }
