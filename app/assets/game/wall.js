@@ -14,7 +14,7 @@ export default class Wall {
     this.speed = 3;
     this.w = 32;
 
-    if (this.size === undefined) this.size = random(90, 250);
+    if (this.size === undefined) this.size = random(130, 250);
 
     if (this.y === undefined) {
       // Random y

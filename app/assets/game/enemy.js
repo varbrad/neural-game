@@ -16,6 +16,12 @@ export default class Enemy {
     this.sprite = sprite;
     this.wantsToFire = false;
     this.fireWait = 0;
+    this.hitbox = {
+      x: 0,
+      y: 0,
+      w: this.w,
+      h: this.h
+    };
   }
 
   /**

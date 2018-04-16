@@ -16,6 +16,12 @@ export default class Bullet {
     this.y -= 5;
     this.speed = speed;
     this.label = label || '?';
+    this.hitbox = {
+      x: 0,
+      y: 0,
+      w: this.w,
+      h: this.h
+    };
   }
 
   /**

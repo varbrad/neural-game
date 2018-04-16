@@ -16,6 +16,12 @@ export default class Player {
     this.acceleration = 1;
     this.wantsToFire = false;
     this.fireWait = 0;
+    this.hitbox = {
+      x: 0,
+      y: 6,
+      w: this.w - 4,
+      h: this.h - 12
+    };
   }
 
   update(speed, keys) {

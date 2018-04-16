@@ -110,6 +110,8 @@ export default {
       if (e.code === 'BracketRight') {
         document.removeEventListener('keydown', this.keydown);
         this.doExport();
+      } else if (e.code === 'KeyR') {
+        this.reset();
       }
     }
   }

@@ -5,7 +5,13 @@ export function random(min, max) {
 }
 
 export function aabb(a, b) {
-  return (
-    a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y
-  );
+  const ax = a.x + a.hitbox.x;
+  const bx = b.x + b.hitbox.x;
+  const ay = a.y + a.hitbox.y;
+  const by = b.y + b.hitbox.y;
+  const aw = a.hitbox.w;
+  const bw = b.hitbox.w;
+  const ah = a.hitbox.h;
+  const bh = b.hitbox.h;
+  return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
 }
