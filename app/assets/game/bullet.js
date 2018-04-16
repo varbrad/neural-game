@@ -22,8 +22,8 @@ export default class Bullet {
    * Return true to remove bullet
    */
   update(gameSpeed) {
-    this.x += this.dx * this.speed;
-    this.y += this.dy * this.speed;
+    this.x += this.dx * this.speed * gameSpeed;
+    this.y += this.dy * this.speed * gameSpeed;
     // If off-screen, return a remove flag
     if (this.x > WIDTH + this.r * 2) return true;
   }

@@ -14,12 +14,18 @@ export default class Enemy {
     this.y -= this.h * 0.5;
     this.speed = 3;
     this.sprite = sprite;
+    this.wantsToFire = false;
+    this.fireWait = 0;
   }
 
   /**
    * Return true to remove bullet
    */
   update(gameSpeed) {
+    this.fireWait--;
+
+    if (this.fireWait <= 0) this.wantsToFire = true;
+
     this.x -= gameSpeed * this.speed;
     // If off-screen, return a remove flag
     if (this.x < -this.w) return true;

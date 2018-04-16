@@ -32,6 +32,7 @@ class Game {
     this.sprites = {
       enemy_1: document.getElementById('enemy_1'),
       enemy_2: document.getElementById('enemy_2'),
+      enemy_bullet: document.getElementById('enemy_bullet'),
       player_blue: document.getElementById('player_blue'),
       player_bullet: document.getElementById('player_bullet'),
       player_orange: document.getElementById('player_orange'),
@@ -133,6 +134,8 @@ class Game {
         w.x = maxWallX + this.wallGap;
         // Randomize the wall
         w.setRandomY();
+        // Increase the game speed
+        this.speed += 0.05;
         // Award some points!
         this.score += 50;
       }
@@ -140,10 +143,18 @@ class Game {
     // Update enemy
     if (this.enemy) {
       const remove = this.enemy.update(this.speed);
-      // If enemy went off left side of screen
-      if (remove) this.newEnemy();
+      // Does enemy want to shoot
+      if (this.enemy.wantsToFire) {
+        this.enemy.fireWait = Math.floor(1000 / 16); // Ticks to wait
+        this.enemy.wantsToFire = false;
+        this.fireEnemyBullet(
+          this.enemy.x - this.enemy.w * 0.5,
+          this.enemy.y + this.enemy.h * 0.5
+        );
+        // If enemy went off left side of screen
+        if (remove) this.newEnemy();
+      }
     }
-
     // OK, if we have a brain, get our keystates
     this.snapshot = createSnapshot(this);
     if (this.useBrain) {
@@ -252,6 +263,12 @@ class Game {
         this.player.w,
         this.player.h
       );
+      this.gc.strokeRect(
+        this.enemy.x,
+        this.enemy.y,
+        this.enemy.w,
+        this.enemy.h
+      );
       // Bullets
       this.bullets.forEach(b => {
         this.gc.strokeRect(b.x, b.y, b.w, b.h);
@@ -267,7 +284,11 @@ class Game {
   }
 
   firePlayerBullet(x, y) {
-    this.bullets.push(new Bullet(this.sprites.player_bullet, x, y, 1, 0, 8));
+    this.bullets.push(new Bullet(this.sprites.player_bullet, x, y, 1, 0, 3));
+  }
+
+  fireEnemyBullet(x, y) {
+    this.bullets.push(new Bullet(this.sprites.enemy_bullet, x, y, -1, 0, 6));
   }
 
   /**
