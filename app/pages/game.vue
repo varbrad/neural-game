@@ -63,6 +63,7 @@ export default {
     document.addEventListener('keydown', this.keydown);
   },
   beforeDestroy() {
+    document.removeEventListener('keydown', this.keydown);
     if (this.game) this.game.halt();
   },
   methods: {

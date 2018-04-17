@@ -47,8 +47,10 @@ export default {
   },
   mounted() {
     this.reset();
+    document.addEventListener('keydown', this.keydown);
   },
   beforeDestroy() {
+    document.removeEventListener('keydown', this.keydown);
     this.game.halt();
   },
   computed: {
@@ -63,6 +65,11 @@ export default {
     reset() {
       if (this.game) this.game.halt();
       this.game = start(this.$refs.canvas, this.brain);
+    },
+    keydown(e) {
+      if (e.code === 'KeyR') {
+        this.reset();
+      }
     }
   }
 };
